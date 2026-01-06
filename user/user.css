@@ -1,0 +1,4 @@
+/* Optional styles for the Users sidebar (Tailwind covers most of the UI) */
+.user-sidebar {
+  min-width: 250px;
+}

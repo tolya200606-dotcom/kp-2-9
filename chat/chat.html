@@ -1,0 +1,52 @@
+<!-- Основна область чату -->
+<template x-if="accessToken">
+  <div class="flex flex-col h-full">
+    <!-- Header -->
+    <div class="p-4 border-b bg-white flex items-center justify-between">
+      <div>
+        <h2 class="text-xl font-bold" x-text="currentRoomName || 'Select a room'"></h2>
+        <p class="text-xs text-gray-500" x-show="roomId" x-text="roomId"></p>
+      </div>
+      <div class="text-xs text-gray-600" x-text="userId"></div>
+    </div>
+
+    <!-- Messages -->
+    <div class="chat-messages flex-grow p-4 overflow-y-auto bg-gray-100">
+      <template x-if="!roomId">
+        <p class="text-gray-500">Select a room in the left sidebar.</p>
+      </template>
+
+      <template x-if="roomId">
+        <div class="space-y-3">
+          <template x-for="msg in messages" :key="msg.eventId">
+            <div class="p-3 rounded-lg bg-white shadow-sm">
+              <div class="text-xs text-gray-500" x-text="msg.sender"></div>
+              <div class="text-sm" x-text="msg.body"></div>
+              <div class="text-[10px] text-gray-400 mt-1" x-text="new Date(msg.timestamp).toLocaleString()"></div>
+            </div>
+          </template>
+
+          <template x-if="messages.length === 0">
+            <p class="text-gray-500 text-sm">No messages yet.</p>
+          </template>
+        </div>
+      </template>
+    </div>
+
+    <!-- Input -->
+    <div class="p-4 border-t bg-white" x-show="roomId">
+      <textarea
+        x-model="newMessage"
+        class="message-input border p-2 w-full rounded mb-2"
+        placeholder="Type a message..."
+      ></textarea>
+      <button
+        @click="sendMessage()"
+        class="bg-indigo-500 text-white p-2 w-full rounded hover:bg-indigo-600 transition"
+      >
+        Send
+      </button>
+      <p x-show="error" class="text-red-500 text-xs mt-2" x-text="error"></p>
+    </div>
+  </div>
+</template>

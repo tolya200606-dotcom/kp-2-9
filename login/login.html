@@ -1,0 +1,27 @@
+<template x-if="!accessToken">
+  <div id="login-container" class="rounded-lg shadow-md">
+    <h1 class="text-2xl font-bold mb-4">Matrix Chat</h1>
+
+    <div class="space-y-4">
+      <input
+        type="text"
+        x-model="username"
+        placeholder="User ID (e.g. @user:matrix.org)"
+        class="border p-2 w-full rounded"
+      />
+      <input
+        type="password"
+        x-model="password"
+        placeholder="Password"
+        class="border p-2 w-full rounded"
+      />
+      <button
+        @click="login()"
+        class="bg-blue-500 text-white p-2 w-full rounded hover:bg-blue-600 transition"
+      >
+        Login
+      </button>
+      <p x-show="error" class="text-red-500 text-sm" x-text="error"></p>
+    </div>
+  </div>
+</template>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matrix Chat</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/alpinejs" defer></script>
+
+  <!-- Components logic -->
+  <script src="./login/login.js"></script>
+  <script src="./sidebar/sidebar.js"></script>
+  <script src="./chat/chat.js"></script>
+  <script src="./user/user.js"></script>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="./login/login.css">
+  <link rel="stylesheet" href="./sidebar/sidebar.css">
+  <link rel="stylesheet" href="./chat/chat.css">
+  <link rel="stylesheet" href="./user/user.css">
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+</head>
+
+<body class="index-container bg-gray-100 flex justify-center">
+  <div
+    x-data="chatApp()"
+    :class="accessToken ? '' : 'items-center'"
+    class="flex w-full h-full"
+  >
+    <!-- Rooms sidebar (left) -->
+    <div id="sidebar-container"></div>
+
+    <!-- Middle area: login or chat -->
+    <div class="chat-area flex flex-col flex-grow">
+      <div id="login-container" class="w-full"></div>
+      <div id="chat-container" class="flex flex-col flex-grow"></div>
+    </div>
+
+    <!-- Users sidebar (right) -->
+    <div id="user-container"></div>
+  </div>
+
+  <script>
+    function loadComponent(id, url) {
+      fetch(url)
+        .then((r) => r.text())
+        .then((html) => {
+          const el = document.getElementById(id);
+          if (el) el.innerHTML = html;
+        });
+    }
+
+    loadComponent('login-container', './login/login.html');
+    loadComponent('sidebar-container', './sidebar/sidebar.html');
+    loadComponent('chat-container', './chat/chat.html');
+    loadComponent('user-container', './user/user.html');
+
+    function chatApp() {
+      return {
+        // Auth
+        username: '',
+        password: '',
+        accessToken: '',
+        userId: '',
+
+        // Rooms
+        roomId: '',
+        joinRoomId: '',
+        newRoomName: '',
+        newRoomId: '',
+        rooms: [],
+        currentRoomName: '',
+
+        // Chat
+        messages: [],
+        newMessage: '',
+        lastSyncToken: '',
+
+        // Users / invites
+        inviteUser: '',
+        roomMembers: [],
+
+        // UI
+        error: '',
+
+        // Methods (from component files)
+        login,
+        createRoom,
+        fetchRoomsWithNames,
+        leaveRoom,
+        joinRoom,
+        inviteUserToRoom,
+        getRoomName,
+        switchRoom,
+        sendMessage,
+        fetchMessages,
+        fetchRoomMembers, // ← додано
+        kickUser,
+      }
+    }
+
+    // PWA service worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js');
+      });
+    }
+  </script>
+</body>
+</html>
